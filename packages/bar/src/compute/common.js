@@ -26,11 +26,36 @@ export const getIndexScale = (data, getIndex, range, padding, indexScale) => {
         .padding(padding)
 }
 
-export const normalizeData = (data, keys) =>
-    data.map(item => ({
-        ...keys.reduce((acc, key) => ({ ...acc, [key]: null }), {}),
-        ...item,
-    }))
+const cloneObject = obj => {
+    var clone = {}
+    for (var i in obj) {
+        if (typeof obj[i] == 'object' && obj[i] != null) clone[i] = cloneObject(obj[i])
+        else clone[i] = obj[i]
+    }
+    return clone
+}
 
-export const filterNullValues = data =>
-    Object.keys(data).reduce((acc, key) => (data[key] ? { ...acc, [key]: data[key] } : acc), {})
+export const normalizeData = (data, keys) => {
+    const res = []
+    for (let entry of data) {
+        const copied = cloneObject(entry)
+        for (let key of keys) {
+            if (!copied.hasOwnProperty(key)) {
+                copied[key] = null
+            }
+        }
+        res.push(copied)
+    }
+    return res
+}
+
+export const filterNullValues = data => {
+    const res = {}
+    const keys = Object.keys(data)
+    for (const key of keys) {
+        if (data[key]) {
+            res[key] = data[key]
+        }
+    }
+    return res
+}

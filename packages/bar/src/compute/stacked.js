@@ -57,7 +57,7 @@ const generateVerticalStackedBars = (
                     value: d.data[stackedDataItem.key],
                     index: i,
                     indexValue: index,
-                    data: filterNullValues(d.data),
+                    data: d.data,
                 }
 
                 return {
@@ -152,7 +152,7 @@ export const generateStackedBars = ({
     indexScale: indexScaleConfig,
     ...props
 }) => {
-    const stackedData = stack().keys(keys).offset(stackOffsetDiverging)(normalizeData(data, keys))
+    const stackedData = stack().keys(keys).offset(stackOffsetDiverging)(data)
 
     const [axis, range] = layout === 'vertical' ? ['y', [0, width]] : ['x', [height, 0]]
     const indexScale = getIndexScale(data, props.getIndex, range, padding, indexScaleConfig)
